@@ -1,0 +1,56 @@
+✅ Step 1: Store Husband's Passport Details
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@store my passport number is HUS123456789 and my expiry date is 15/08/2032\"}"
+
+✅ Step 2: Store Wife's Passport Details
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@store my wife's passport number is WIFE987654321 and her expiry date is 20/12/2031\"}"
+
+✅ Step 3: Retrieve Husband's Passport Number
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my passport number?\"}"
+
+✅ Step 4: Retrieve Husband's Passport Expiry Date
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my passport expiry date?\"}"
+
+✅ Step 5: Retrieve Wife's Passport Number
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my wife's passport number?\"}"
+
+✅ Step 6: Retrieve Wife's Passport Expiry Date
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my wife's passport expiry date?\"}"
+
+1️⃣ Store Data in Pinecone
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"john_doe\", \"message\":\"@store passport number is X12345678\"}"
+
+2️⃣ Retrieve Data from Pinecone
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"john_doe\", \"message\":\"What is my passport number?\"}"
+
+3️⃣ Test Fallback to LLM
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"john_doe\", \"message\":\"Tell me a fun fact!\"}"
+
+✅ Step 7: Update Husband's Passport Number
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@update my passport number to HUS999999999\"}"
+
+✅ Step 8: Update Husband's Passport Expiry Date
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@update my passport expiry date to 01/01/2040\"}"
+
+✅ Step 9: Update Wife's Passport Number
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@update my wife's passport number to WIFE111222333\"}"
+
+✅ Step 10: Update Wife's Passport Expiry Date
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@update my wife's passport expiry date to 10/10/2045\"}"
+
+✅ Step 11: Confirm Updated Husband's Passport Number
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my passport number?\"}"
+
+✅ Step 12: Confirm Updated Husband's Passport Expiry Date
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my passport expiry date?\"}"
+
+✅ Step 13: Confirm Updated Wife's Passport Number
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my wife's passport number?\"}"
+
+✅ Step 14: Confirm Updated Wife's Passport Expiry Date
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"What is my wife's passport expiry date?\"}"
+
+✅ Step 15: Delete Husband's Passport Details
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@delete my passport number and expiry date\"}"
+
+✅ Step 16: Delete Wife's Passport Details
+curl -X POST "http://127.0.0.1:5000/chat" -H "Content-Type: application/json" -d "{\"user\":\"husband\", \"message\":\"@delete my wife's passport number and expiry date\"}"

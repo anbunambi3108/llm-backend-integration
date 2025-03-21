@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./NLP_Query_Processing"
+    ]
+}
