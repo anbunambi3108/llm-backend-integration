@@ -19,6 +19,7 @@ from restrict_search import get_vector_search_results, verify_token
 # from encrypt_user_data import encrypt_user_data, decrypt_user_data
 from anomaly_detection import detect_anomaly
 from nlp_processing import build_storage_key
+from nlp_processing import preprocess_query 
 
 # Load environment variables (API keys)
 load_dotenv()
@@ -85,7 +86,8 @@ def store_text(user, key, value, relation=None):
     vector_id = f"{user}_{key}"  # Create a unique ID per user
     doc_id = f"{key}_{uuid.uuid4()}"  # Generate a unique ID for the document
     vector_id = doc_id
-    embedding = embed_text(key)  # ✅ Store only the key for retrieval
+    full_key = f"{relation} {key}".strip() if relation else key
+    embedding = embed_text(full_key)  # ✅ Store only the key for retrieval
 
     vectors = [(vector_id, embedding, {
         "value": stored_value, 
@@ -124,7 +126,9 @@ def search_text(user, query, top_k=1):
         return {"error": anomaly_alert}, 429
 
     # Securely query Pinecone
-    query_embedding = embed_text(query)
+    cleaned_query = preprocess_query(query)
+    print(f"[DEBUG] Cleaned query: '{cleaned_query}'")
+    query_embedding = embed_text(cleaned_query)
     print(f"[DEBUG] Generated embedding for query.")
 
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True, namespace=f"user_{user}")
@@ -139,7 +143,6 @@ def search_text(user, query, top_k=1):
                 # decrypted_value = decrypt_user_data(user, encrypted_value)  # 🔐 Decrypt before returning
                 stored_value = match["metadata"].get("value")
                 print(f"[DEBUG] Decrypted value: {stored_value}")
-                print("[DEBUG] No matches found or user mismatch.")
                 return stored_value, match["score"]
             
     print("[DEBUG] No matches found or user mismatch.")

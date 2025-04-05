@@ -84,7 +84,7 @@ def chat():
             cleaned_query = clean_query_text(full_key)
 
             print(f"Searching for: {cleaned_query} for user: {user}")
-            result_text, score = search_text(cleaned_query, user)
+            result_text, score = search_text(user, cleaned_query)
 
             if result_text:
                 print("Found:", result_text)

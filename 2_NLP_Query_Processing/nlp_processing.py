@@ -29,6 +29,7 @@ def preprocess_query(query):
     Returns:
         str: Processed text with only important words.
     """
+    query = re.sub(r"\b(\w+)'s\b", r"\1", query)
     query = query.lower()  # Convert to lowercase
     query = query.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
     words = word_tokenize(query)  # Tokenize
