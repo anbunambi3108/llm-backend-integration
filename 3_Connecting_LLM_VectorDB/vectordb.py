@@ -3,7 +3,7 @@ from pinecone import Pinecone
 import os
 import sys
 from dotenv import load_dotenv
-
+import uuid
 
 # Load environment variables
 PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../2_NLP_Query_Processing"))
@@ -16,8 +16,9 @@ sys.path.append(SECURITY_PATH)
 
 from nlp_processing import extract_key_value
 from restrict_search import get_vector_search_results, verify_token
-from encrypt_user_data import encrypt_user_data, decrypt_user_data
+# from encrypt_user_data import encrypt_user_data, decrypt_user_data
 from anomaly_detection import detect_anomaly
+from nlp_processing import build_storage_key
 
 # Load environment variables (API keys)
 load_dotenv()
@@ -63,7 +64,7 @@ def embed_text(text):
     """Generate embeddings."""
     return model.encode(text).tolist()
 
-def store_text(user, key, value):
+def store_text(user, key, value, relation=None):
     """
     Stores extracted key-value pairs in Pinecone securely.
 
@@ -79,14 +80,25 @@ def store_text(user, key, value):
         print("⚠️ Invalid key-value pair!")
         return
     
-    encrypted_value = encrypt_user_data(user, value)  # 🔐 Encrypt value before storing
-    embedding = embed_text(key)  # ✅ Store only the key for retrieval
+    stored_value = value
+    storage_key = build_storage_key(key, relation)
     vector_id = f"{user}_{key}"  # Create a unique ID per user
+    doc_id = f"{key}_{uuid.uuid4()}"  # Generate a unique ID for the document
+    vector_id = doc_id
+    embedding = embed_text(key)  # ✅ Store only the key for retrieval
 
-    vectors = [(vector_id, embedding, {"value": encrypted_value, "user": user})]
-    index.upsert(vectors=vectors)  # ✅ Store only key-value pair
+    vectors = [(vector_id, embedding, {
+        "value": stored_value, 
+        "user": user,
+        "relation": relation or "",
+        "key": storage_key
+        })]
+    print("DEBUG: Upserting into Pinecone with metadata:", vectors)
+    index.upsert(vectors=vectors, namespace=f"user_{user}") # ✅ Add namespace
 
-    print(f"✅ Stored: '{key}' for user: {user}")
+    print(f"Stored: '{key}' for user: {user}")
+    print(f"relation: {relation} for user: {user}")
+
 
 def search_text(user, query, top_k=1):
     """
@@ -104,6 +116,8 @@ def search_text(user, query, top_k=1):
     Returns:
         str: The stored value if found, otherwise None.
     """
+    print(f"[DEBUG] Searching for query: '{query}' by user: '{user}'")
+
     # Detect anomalies (e.g., excessive queries)
     anomaly_alert = detect_anomaly(user)
     if anomaly_alert != "Normal activity.":
@@ -111,18 +125,25 @@ def search_text(user, query, top_k=1):
 
     # Securely query Pinecone
     query_embedding = embed_text(query)
-    results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
+    print(f"[DEBUG] Generated embedding for query.")
+
+    results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True, namespace=f"user_{user}")
+    print(f"[DEBUG] Raw Pinecone matches: {results.get('matches', [])}")
 
     if results and results["matches"]:
         for match in results["matches"]:
+            print(f"[DEBUG] Match metadata: {match['metadata']}")
+
             if match["metadata"].get("user") == user:  # ✅ Ensure result belongs to correct user
-                encrypted_value = match["metadata"].get("value")  
-                decrypted_value = decrypt_user_data(user, encrypted_value)  # 🔐 Decrypt before returning
-                
-                return decrypted_value, match["score"]
-
+                # encrypted_value = match["metadata"].get("value")  
+                # decrypted_value = decrypt_user_data(user, encrypted_value)  # 🔐 Decrypt before returning
+                stored_value = match["metadata"].get("value")
+                print(f"[DEBUG] Decrypted value: {stored_value}")
+                print("[DEBUG] No matches found or user mismatch.")
+                return stored_value, match["score"]
+            
+    print("[DEBUG] No matches found or user mismatch.")
     return None, None
-
 
 if __name__ == "__main__":
     # Store sample texts (only needed once)

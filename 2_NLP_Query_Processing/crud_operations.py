@@ -30,14 +30,3 @@ def detect_intent(query):
 
     # If no command is found, assume it's a retrieval query (retrieve_memory)
     return "retrieve_memory"  # By default, assume the user wants to retrieve stored data
-
-# if __name__ == "__main__":
-#     # Test cases
-#     test_queries = [
-#         "Remember my passport number is 123456789.",
-#         "What is my passport number?",
-#         "Forget my old passport number."
-#     ]
-
-#     for query in test_queries:
-#         print(f"Query: {query} → Intent: {detect_intent(query)}")

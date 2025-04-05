@@ -1,5 +1,5 @@
-from relationship_mapping import get_relationship, add_relationship, update_relationship, delete_relationship
 from difflib import get_close_matches
+from nlp_processing import clean_query_text
 
 def find_closest_key(user_input, stored_keys):
     """
@@ -33,6 +33,7 @@ def retrieve_value(user, user_input, user_memory):
         return "I don't have any stored information for you."
 
     standardized_key = get_standardized_key(user_input)  # ✅ Standardize before searching
+    standardized_key = clean_query_text(user_input)
 
     print(f"🔍 DEBUG: Standardized Key - {standardized_key}")
     print(f"🔍 DEBUG: Stored Keys for {user} - {list(user_memory[user].keys())}")
@@ -47,3 +48,7 @@ def retrieve_value(user, user_input, user_memory):
         return f"{closest_match}: {', '.join(user_memory[user][closest_match])}"
 
     return "I couldn't find that information in memory."
+
+def get_standardized_key(query):
+    # Simply clean and standardize the query text
+    return clean_query_text(query)
