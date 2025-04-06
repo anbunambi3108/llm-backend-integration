@@ -134,11 +134,13 @@ def search_text(user, query, top_k=1):
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True, namespace=f"user_{user}")
     print(f"[DEBUG] Raw Pinecone matches: {results.get('matches', [])}")
 
+    SIMILARITY_THRESHOLD = 0.75
+
     if results and results["matches"]:
         for match in results["matches"]:
             print(f"[DEBUG] Match metadata: {match['metadata']}")
 
-            if match["metadata"].get("user") == user:  # ✅ Ensure result belongs to correct user
+            if match["score"] >= SIMILARITY_THRESHOLD and match["metadata"].get("user") == user: # ✅ Ensure result belongs to correct user
                 # encrypted_value = match["metadata"].get("value")  
                 # decrypted_value = decrypt_user_data(user, encrypted_value)  # 🔐 Decrypt before returning
                 stored_value = match["metadata"].get("value")

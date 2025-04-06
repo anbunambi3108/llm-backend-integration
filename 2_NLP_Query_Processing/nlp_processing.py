@@ -75,6 +75,33 @@ def extract_key_value(user_input):
 
     return key_value_relation if key_value_relation else None
 
+def extract_key_for_retrieval(user_input):
+    """
+    Extracts key and relation for retrieval (e.g., 'what is my wife's passport number?').
+    Returns (key, relation) tuple.
+    """
+    cleaned = user_input.strip().lower()
+
+    # Remove leading question words, helpers, and 'my'
+    cleaned = re.sub(r"^(what's|what|tell me|when does|where is|how does|who has|can you|do you know)[\s,]+", '', cleaned)
+    cleaned = re.sub(r'^my\s+', '', cleaned)
+
+    # Try to extract relation from possessive (e.g., "wife's passport")
+    possessive_match = re.match(r"(\w+)'s\s+(.*)", cleaned)
+    if possessive_match:
+        relation = possessive_match.group(1)
+        key = possessive_match.group(2)
+    else:
+        key = cleaned
+        relation = None
+
+    # Additional cleanup: strip out junk and trailing punctuation
+    key = re.sub(r'^(is|my|the)\s+', '', key, flags=re.IGNORECASE).strip()
+    key = key.rstrip('?.!').strip()
+
+    return key, relation
+
+
 def clean_query_text(query):
     """
     Cleans query text by removing unnecessary words like 'my'
@@ -111,3 +138,21 @@ def extract_relation_and_key(query):
     if match:
         return match.group(1).lower(), match.group(2).lower()
     return None, query.lower()
+
+def to_possessive(phrase):
+    """
+    Converts the first word (assumed to be a relation) into possessive form.
+    E.g., 'wife passport number' → 'wife's passport number'
+    
+    If already possessive, returns as is.
+    """
+    words = phrase.strip().split()
+    if not words:
+        return phrase
+
+    # Don't double-possess
+    if words[0].endswith("'s"):
+        return phrase
+
+    words[0] = words[0] + "'s"
+    return " ".join(words)
