@@ -12,7 +12,7 @@ nltk.download("punkt")
 nltk.download("stopwords")
 
 # Load environment variables
-env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../1_Setting_up_LLM/.env"))
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../Setting_up_LLM/.env"))
 load_dotenv(env_path)
 
 # Fetch API Key

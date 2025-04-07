@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 import uuid
 
 # Load environment variables
-PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../2_NLP_Query_Processing"))
+PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../NLP_Query_Processing"))
 sys.path.append(PROJECT_PATH)
 
 # Add 5_LLM_Security to Python's module search path
-SECURITY_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../5_LLM_Security"))
+SECURITY_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../LLM_Security"))
 sys.path.append(SECURITY_PATH)
 
 
@@ -134,7 +134,7 @@ def search_text(user, query, top_k=1):
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True, namespace=f"user_{user}")
     print(f"[DEBUG] Raw Pinecone matches: {results.get('matches', [])}")
 
-    SIMILARITY_THRESHOLD = 0.75
+    SIMILARITY_THRESHOLD = 0.5
 
     if results and results["matches"]:
         for match in results["matches"]:

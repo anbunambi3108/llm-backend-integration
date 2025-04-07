@@ -5,7 +5,7 @@ import jwt
 from flask import request
 import datetime
 
-dotenv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../3_Connecting_LLM_VectorDB/.env"))
+dotenv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../Connecting_LLM_VectorDB/.env"))
 load_dotenv(dotenv_path)
 
 # Load Pinecone API key

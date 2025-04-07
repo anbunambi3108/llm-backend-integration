@@ -6,10 +6,10 @@ import sys
 import re
 
 # Add path to NLP and VectorDB modules
-nlp_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../2_NLP_Query_Processing"))
+nlp_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../NLP_Query_Processing"))
 sys.path.append(nlp_path)
 
-vectordb_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../3_Connecting_LLM_VectorDB"))
+vectordb_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../Connecting_LLM_VectorDB"))
 sys.path.append(vectordb_path)
 
 # Import NLP components
